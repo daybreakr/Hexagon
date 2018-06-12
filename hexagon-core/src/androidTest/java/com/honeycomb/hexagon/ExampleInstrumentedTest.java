@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.honeycomb.hexagon", appContext.getPackageName());
+        assertEquals("com.honeycomb.hexagon.test", appContext.getPackageName());
     }
 }

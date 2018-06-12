@@ -11,14 +11,11 @@ buildscript {
 
     ext.deps = [
             androidPlugin: "com.android.tools.build:gradle:${versions.androidPlugin}",
-            support: [
-                    test: [
-                            runner: 'com.android.support.test:runner:1.0.2',
-                            espresso: 'com.android.support.test.espresso:espresso-core:3.0.2',
-                    ],
+            test: [
+                    junit: 'junit:junit:4.12',
+                    androidJunit: 'com.android.support.test:runner:1.0.2',
+                    espresso: 'com.android.support.test.espresso:espresso-core:3.0.2',
             ],
-            junit: 'junit:junit:4.12',
-            androidJunitRunner: 'android.support.test.runner.AndroidJUnitRunner',
     ]
 
     repositories {

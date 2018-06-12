@@ -5,23 +5,16 @@ android {
 
     defaultConfig {
         minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
-        versionCode 1
-        versionName '1.0.0'
 
-        testInstrumentationRunner deps.androidJunitRunner
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    libraryVariants.all {
+        it.generateBuildConfig.enabled false
     }
 }
 
 dependencies {
-    testImplementation deps.junit
-    androidTestImplementation deps.support.test.runner
-    androidTestImplementation deps.support.test.espresso
+    testImplementation deps.test.junit
+    androidTestImplementation deps.test.androidJunit
 }
