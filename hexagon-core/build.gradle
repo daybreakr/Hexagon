@@ -17,4 +17,6 @@ android {
 dependencies {
     testImplementation deps.test.junit
     androidTestImplementation deps.test.androidJunit
+
+    api project(':honeycomb-basement')
 }
