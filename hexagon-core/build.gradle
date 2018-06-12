@@ -1,10 +1,9 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion versions.compileSdk
 
     defaultConfig {
-        applicationId "com.honeycomb.hexagon"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode 1
