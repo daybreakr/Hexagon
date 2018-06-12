@@ -1,4 +1,4 @@
-package com.honeycomb.hexagon;
+package com.honeycomb.hexagon.core;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.honeycomb.hexagon.test", appContext.getPackageName());
+        assertEquals("com.honeycomb.hexagon.core.test", appContext.getPackageName());
     }
 }

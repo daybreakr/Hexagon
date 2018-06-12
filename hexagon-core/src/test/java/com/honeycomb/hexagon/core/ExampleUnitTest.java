@@ -1,4 +1,4 @@
-package com.honeycomb.hexagon;
+package com.honeycomb.hexagon.core;
 
 import org.junit.Test;
 
