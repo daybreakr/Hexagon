@@ -1,4 +1,4 @@
-package com.honeycomb.hexagon.registration;
+package com.honeycomb.hexagon.register;
 
 import com.honeycomb.basement.provider.ReflectiveProvider;
 

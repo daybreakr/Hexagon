@@ -1,4 +1,4 @@
-package com.honeycomb.hexagon.core.service;
+package com.honeycomb.hexagon.core;
 
 import com.honeycomb.basement.provider.IProvider;
 
@@ -22,22 +22,24 @@ public class ServiceRegistry {
     public static final String CATEGORY_DEFAULT = "default";
 
     public void register(ServiceInfo serviceInfo, IProvider<? extends IService> provider) {
+        final String name = serviceInfo.name();
+
         // Make a copy of the original service info.
         serviceInfo = new ServiceInfo(serviceInfo);
 
         // Register service info.
-        mServices.put(serviceInfo.name, serviceInfo);
+        mServices.put(name, serviceInfo);
 
         // Register service instance provider.
-        mProviders.put(serviceInfo.name, provider);
+        mProviders.put(name, provider);
 
         // Register service categories.
         // set to default category if not specified any
-        if (serviceInfo.categories.isEmpty()) {
-            serviceInfo.categories.add(CATEGORY_DEFAULT);
+        if (serviceInfo.categories().isEmpty()) {
+            serviceInfo.categorise(CATEGORY_DEFAULT);
         }
-        for (String category : serviceInfo.categories) {
-            registerCategory(serviceInfo.name, category);
+        for (String category : serviceInfo.categories()) {
+            registerCategory(name, category);
         }
     }
 
@@ -46,7 +48,7 @@ public class ServiceRegistry {
         if (service != null) {
             mServices.remove(name);
             mProviders.remove(name);
-            for (String category : service.categories) {
+            for (String category : service.categories()) {
                 Set<String> set = mCategories.get(category);
                 if (set != null) {
                     set.remove(name);
@@ -149,17 +151,13 @@ public class ServiceRegistry {
     }
 
     private IService provideService(String name) {
-        if (isEnabled(name)) {
+        ServiceInfo service = getServiceInfo(name);
+        if (service != null && service.enabled()) {
             IProvider<? extends IService> provider = mProviders.get(name);
             if (provider != null) {
                 return provider.get();
             }
         }
         return null;
-    }
-
-    private boolean isEnabled(String name) {
-        ServiceInfo info = getServiceInfo(name);
-        return info != null && info.enabled;
     }
 }

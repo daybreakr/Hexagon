@@ -1,4 +1,4 @@
-package com.honeycomb.hexagon.core.service;
+package com.honeycomb.hexagon.core;
 
 public interface IService {
 

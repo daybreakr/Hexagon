@@ -1,4 +1,4 @@
-package com.honeycomb.hexagon.core.service;
+package com.honeycomb.hexagon.core;
 
 import com.honeycomb.hexagon.HexagonEngine;
 
@@ -38,7 +38,7 @@ public class ServiceManager {
         if (services != null) {
             boolean result = true;
             for (ServiceInfo service : services) {
-                result &= startService(service.name);
+                result &= startService(service.name());
             }
             return result;
         }
@@ -81,7 +81,7 @@ public class ServiceManager {
         if (services != null) {
             boolean result = true;
             for (ServiceInfo service : services) {
-                result &= stopService(service.name);
+                result &= stopService(service.name());
             }
             return result;
         }

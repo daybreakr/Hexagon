@@ -1,4 +1,4 @@
-package com.honeycomb.hexagon.core.module;
+package com.honeycomb.hexagon.core;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,8 +10,11 @@ public class ModuleRegistry {
     private final Map<String, ModuleInfo> mModules = new HashMap<>();
 
     public void register(ModuleInfo moduleInfo) {
+        // Make a copy of the original module info.
+        moduleInfo = new ModuleInfo(moduleInfo);
+
         // Register module info.
-        mModules.put(moduleInfo.name, moduleInfo);
+        mModules.put(moduleInfo.name(), moduleInfo);
     }
 
     public void unregister(String name) {
@@ -36,5 +39,15 @@ public class ModuleRegistry {
             modules.add(new ModuleInfo(module));
         }
         return modules;
+    }
+
+    public void resolve(String moduleName, boolean enabled) {
+        ModuleInfo module = mModules.get(moduleName);
+        if (module != null) {
+            module.resolve();
+            if (enabled) {
+                module.enable();
+            }
+        }
     }
 }

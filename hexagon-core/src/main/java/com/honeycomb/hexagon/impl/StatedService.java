@@ -1,4 +1,6 @@
-package com.honeycomb.hexagon.core.service;
+package com.honeycomb.hexagon.impl;
+
+import com.honeycomb.hexagon.core.IService;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

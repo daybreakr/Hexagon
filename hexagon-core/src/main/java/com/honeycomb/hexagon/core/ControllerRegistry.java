@@ -1,4 +1,4 @@
-package com.honeycomb.hexagon.core.controller;
+package com.honeycomb.hexagon.core;
 
 import com.honeycomb.basement.provider.IProvider;
 
@@ -15,14 +15,16 @@ public class ControllerRegistry {
     private final Map<String, IProvider<? extends IController>> mProviders = new HashMap<>();
 
     public void register(ControllerInfo controllerInfo, IProvider<? extends IController> provider) {
+        final String name = controllerInfo.name();
+
         // Make a copy of the original controller info.
         controllerInfo = new ControllerInfo(controllerInfo);
 
         // Register controller info.
-        mControllers.put(controllerInfo.name, controllerInfo);
+        mControllers.put(name, controllerInfo);
 
         // Register controller instance provider.
-        mProviders.put(controllerInfo.name, provider);
+        mProviders.put(name, provider);
     }
 
     public void unregister(String name) {
@@ -68,18 +70,24 @@ public class ControllerRegistry {
         return null;
     }
 
+    public void resolve(String controllerName, boolean enabled) {
+        ControllerInfo controller = mControllers.get(controllerName);
+        if (controller != null) {
+            controller.resolve();
+            if (enabled) {
+                controller.enabled();
+            }
+        }
+    }
+
     private IController provideController(String name) {
-        if (isEnabled(name)) {
+        ControllerInfo controller = getControllerInfo(name);
+        if (controller != null && controller.enabled()) {
             IProvider<? extends IController> provider = mProviders.get(name);
             if (provider != null) {
                 return provider.get();
             }
         }
         return null;
-    }
-
-    private boolean isEnabled(String name) {
-        ControllerInfo controller = getControllerInfo(name);
-        return controller != null && controller.enabled;
     }
 }

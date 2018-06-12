@@ -1,10 +1,10 @@
 package com.honeycomb.hexagon;
 
-import com.honeycomb.hexagon.core.controller.ControllerRegistry;
-import com.honeycomb.hexagon.core.module.ModuleRegistry;
-import com.honeycomb.hexagon.core.service.ServiceManager;
-import com.honeycomb.hexagon.core.service.ServiceRegistry;
-import com.honeycomb.hexagon.registration.ModuleRegistrar;
+import com.honeycomb.hexagon.core.ControllerRegistry;
+import com.honeycomb.hexagon.core.ModuleRegistry;
+import com.honeycomb.hexagon.core.ServiceManager;
+import com.honeycomb.hexagon.core.ServiceRegistry;
+import com.honeycomb.hexagon.register.ModuleRegistrar;
 
 public class HexagonEngine {
     private final ModuleRegistry mModuleRegistry;

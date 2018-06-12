@@ -1,10 +1,10 @@
-package com.honeycomb.hexagon.registration;
+package com.honeycomb.hexagon.register;
 
 import com.honeycomb.basement.provider.IProvider;
 import com.honeycomb.basement.provider.InstanceProvider;
 import com.honeycomb.basement.provider.ReflectiveProvider;
 import com.honeycomb.basement.provider.SingletonProviderWrapper;
-import com.honeycomb.hexagon.core.controller.IController;
+import com.honeycomb.hexagon.core.IController;
 
 public class ControllerRegistration<T extends IController> {
     private final Class<T> mApiClass;
