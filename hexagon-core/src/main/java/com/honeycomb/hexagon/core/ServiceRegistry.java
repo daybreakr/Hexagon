@@ -10,16 +10,16 @@ import java.util.Map;
 import java.util.Set;
 
 public class ServiceRegistry {
+    // Added to default category if no category specified when registered.
+    public static final String CATEGORY_DEFAULT = "default";
+
+    private final Map<String, Set<String>> mCategories = new HashMap<>();
+
     // Contains all registered service info indexing by service name.
     private final Map<String, ServiceInfo> mServices = new HashMap<>();
 
     // Contains all registered service providers indexing by service name.
     private final Map<String, IProvider<? extends IService>> mProviders = new HashMap<>();
-
-    private final Map<String, Set<String>> mCategories = new HashMap<>();
-
-    // Added to default category if no category specified when registered.
-    public static final String CATEGORY_DEFAULT = "default";
 
     public void register(ServiceInfo serviceInfo, IProvider<? extends IService> provider) {
         final String name = serviceInfo.name();
@@ -44,7 +44,7 @@ public class ServiceRegistry {
     }
 
     public void unregister(String name) {
-        ServiceInfo service = getServiceInfo(name);
+        ServiceInfo service = mServices.get(name);
         if (service != null) {
             mServices.remove(name);
             mProviders.remove(name);
@@ -64,20 +64,28 @@ public class ServiceRegistry {
         return mServices.containsKey(name);
     }
 
+    public Set<String> getRegisteredCategories() {
+        return new LinkedHashSet<>(mCategories.keySet());
+    }
+
+    public Set<String> getRegisteredServiceNames(String category) {
+        Set<String> names = mCategories.get(category);
+        if (names != null) {
+            return new LinkedHashSet<>(names);
+        }
+        return null;
+    }
+
+    public Set<String> getRegisteredServiceNames() {
+        return new LinkedHashSet<>(mServices.keySet());
+    }
+
     public ServiceInfo getServiceInfo(String name) {
         ServiceInfo service = mServices.get(name);
         if (service != null) {
             return new ServiceInfo(service);
         }
         return null;
-    }
-
-    public List<ServiceInfo> getRegisteredServices() {
-        List<ServiceInfo> services = new LinkedList<>();
-        for (ServiceInfo service : mServices.values()) {
-            services.add(new ServiceInfo(service));
-        }
-        return services;
     }
 
     public List<ServiceInfo> getRegisteredServices(String category) {
@@ -90,6 +98,14 @@ public class ServiceRegistry {
                     services.add(service);
                 }
             }
+        }
+        return services;
+    }
+
+    public List<ServiceInfo> getRegisteredServices() {
+        List<ServiceInfo> services = new LinkedList<>();
+        for (ServiceInfo service : mServices.values()) {
+            services.add(new ServiceInfo(service));
         }
         return services;
     }
@@ -112,17 +128,6 @@ public class ServiceRegistry {
         return null;
     }
 
-    public List<IService> getServices() {
-        List<IService> services = new LinkedList<>();
-        for (String name : mServices.keySet()) {
-            IService service = getService(name);
-            if (service != null) {
-                services.add(service);
-            }
-        }
-        return services;
-    }
-
     public List<IService> getServices(String category) {
         List<IService> services = new LinkedList<>();
         Set<String> names = mCategories.get(category);
@@ -137,8 +142,15 @@ public class ServiceRegistry {
         return services;
     }
 
-    public List<String> getRegisteredCategories() {
-        return new LinkedList<>(mCategories.keySet());
+    public List<IService> getServices() {
+        List<IService> services = new LinkedList<>();
+        for (String name : mServices.keySet()) {
+            IService service = getService(name);
+            if (service != null) {
+                services.add(service);
+            }
+        }
+        return services;
     }
 
     private void registerCategory(String name, String category) {
@@ -151,8 +163,8 @@ public class ServiceRegistry {
     }
 
     private IService provideService(String name) {
-        ServiceInfo service = getServiceInfo(name);
-        if (service != null && service.enabled()) {
+        ServiceInfo service = mServices.get(name);
+        if (service != null && service.active()) {
             IProvider<? extends IService> provider = mProviders.get(name);
             if (provider != null) {
                 return provider.get();

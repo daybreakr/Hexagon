@@ -18,9 +18,17 @@ public class ServiceInfo extends ModuleComponentInfo {
         mCategories = new HashSet<>(origin.mCategories);
     }
 
+    //==============================================================================================
+    // Getters
+    //==============================================================================================
+
     public Set<String> categories() {
         return Collections.unmodifiableSet(mCategories);
     }
+
+    //==============================================================================================
+    // Setters
+    //==============================================================================================
 
     public void categorise(String... categories) {
         if (categories != null && categories.length > 0) {
@@ -29,7 +37,7 @@ public class ServiceInfo extends ModuleComponentInfo {
     }
 
     public void categorise(Collection<String> categories) {
-        if (categories != null && categories.size() > 0) {
+        if (categories != null && !categories.isEmpty()) {
             mCategories.addAll(categories);
         }
     }

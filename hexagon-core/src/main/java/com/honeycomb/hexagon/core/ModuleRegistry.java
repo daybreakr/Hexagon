@@ -1,9 +1,11 @@
 package com.honeycomb.hexagon.core;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ModuleRegistry {
     // Contains all registered module info indexing by module name.
@@ -25,6 +27,10 @@ public class ModuleRegistry {
         return mModules.containsKey(name);
     }
 
+    public Set<String> getRegisteredModuleNames() {
+        return new LinkedHashSet<>(mModules.keySet());
+    }
+
     public ModuleInfo getModuleInfo(String name) {
         ModuleInfo module = mModules.get(name);
         if (module != null) {
@@ -39,15 +45,5 @@ public class ModuleRegistry {
             modules.add(new ModuleInfo(module));
         }
         return modules;
-    }
-
-    public void resolve(String moduleName, boolean enabled) {
-        ModuleInfo module = mModules.get(moduleName);
-        if (module != null) {
-            module.resolve();
-            if (enabled) {
-                module.enable();
-            }
-        }
     }
 }

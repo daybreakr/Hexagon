@@ -1,6 +1,6 @@
 package com.honeycomb.hexagon.core;
 
-public abstract class ModuleComponentInfo extends ResolvableInfo {
+public abstract class ModuleComponentInfo extends ModuleItemInfo {
     private final String mModule;
 
     public ModuleComponentInfo(String name, String module) {

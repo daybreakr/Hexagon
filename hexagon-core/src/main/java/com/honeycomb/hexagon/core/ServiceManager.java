@@ -3,8 +3,8 @@ package com.honeycomb.hexagon.core;
 import com.honeycomb.hexagon.HexagonEngine;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ServiceManager {
     private final Map<String, ServiceRecord> mRecords = new HashMap<>();
@@ -34,15 +34,20 @@ public class ServiceManager {
             return false;
         }
 
-        List<ServiceInfo> services = mEngine.getServiceRegistry().getRegisteredServices(category);
-        if (services != null) {
+        Set<String> names = mEngine.getServiceRegistry().getRegisteredServiceNames(category);
+        if (names != null) {
             boolean result = true;
-            for (ServiceInfo service : services) {
-                result &= startService(service.name());
+            for (String name : names) {
+                result &= startService(name);
             }
             return result;
         }
         return false;
+    }
+
+    public boolean stopService(IService service) {
+        final String name = service != null ? service.getClass().getName() : null;
+        return name != null && stopService(name);
     }
 
     public boolean stopService(Class<? extends IService> serviceClass) {
@@ -64,8 +69,8 @@ public class ServiceManager {
             return false;
         }
 
-        List<ServiceInfo> services = mEngine.getServiceRegistry().getRegisteredServices(category);
-        return stopServices(services);
+        Set<String> names = mEngine.getServiceRegistry().getRegisteredServiceNames(category);
+        return stopServices(names);
     }
 
     public boolean stopAllServices() {
@@ -73,15 +78,15 @@ public class ServiceManager {
             return false;
         }
 
-        List<ServiceInfo> services = mEngine.getServiceRegistry().getRegisteredServices();
-        return stopServices(services);
+        Set<String> names = mEngine.getServiceRegistry().getRegisteredServiceNames();
+        return stopServices(names);
     }
 
-    private boolean stopServices(List<ServiceInfo> services) {
-        if (services != null) {
+    private boolean stopServices(Set<String> names) {
+        if (names != null) {
             boolean result = true;
-            for (ServiceInfo service : services) {
-                result &= stopService(service.name());
+            for (String name : names) {
+                result &= stopService(name);
             }
             return result;
         }

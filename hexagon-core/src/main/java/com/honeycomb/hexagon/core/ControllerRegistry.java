@@ -3,9 +3,11 @@ package com.honeycomb.hexagon.core;
 import com.honeycomb.basement.provider.IProvider;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ControllerRegistry {
     // Contains all registered controller info indexing by controller name.
@@ -34,6 +36,10 @@ public class ControllerRegistry {
 
     public boolean isRegistered(String name) {
         return mControllers.containsKey(name);
+    }
+
+    public Set<String> getRegisteredControllerNames() {
+        return new LinkedHashSet<>(mControllers.keySet());
     }
 
     public ControllerInfo getControllerInfo(String name) {
@@ -70,19 +76,9 @@ public class ControllerRegistry {
         return null;
     }
 
-    public void resolve(String controllerName, boolean enabled) {
-        ControllerInfo controller = mControllers.get(controllerName);
-        if (controller != null) {
-            controller.resolve();
-            if (enabled) {
-                controller.enabled();
-            }
-        }
-    }
-
     private IController provideController(String name) {
-        ControllerInfo controller = getControllerInfo(name);
-        if (controller != null && controller.enabled()) {
+        ControllerInfo controller = mControllers.get(name);
+        if (controller != null && controller.active()) {
             IProvider<? extends IController> provider = mProviders.get(name);
             if (provider != null) {
                 return provider.get();

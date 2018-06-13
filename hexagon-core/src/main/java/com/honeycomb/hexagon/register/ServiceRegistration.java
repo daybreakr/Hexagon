@@ -1,5 +1,6 @@
 package com.honeycomb.hexagon.register;
 
+import com.honeycomb.basement.condition.ICondition;
 import com.honeycomb.basement.provider.IProvider;
 import com.honeycomb.basement.provider.InstanceProvider;
 import com.honeycomb.basement.provider.ReflectiveProvider;
@@ -8,13 +9,20 @@ import com.honeycomb.hexagon.core.IService;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class ServiceRegistration<T extends IService> {
     private final Class<T> mServiceClass;
-    private IProvider<T> mProvider;
+    private String mLabel;
     private boolean mEnabled = true;
+    private List<ICondition> mPrerequisites;
+    private List<String> mDependencies;
+
     private Set<String> mCategories;
+
+    private IProvider<T> mProvider;
 
     private T mInstance;
 
@@ -48,6 +56,35 @@ public class ServiceRegistration<T extends IService> {
         return mServiceClass;
     }
 
+    public String label() {
+        return mLabel;
+    }
+
+    public boolean enabled() {
+        return mEnabled;
+    }
+
+    public List<ICondition> prerequisites() {
+        if (mPrerequisites != null) {
+            return Collections.unmodifiableList(mPrerequisites);
+        }
+        return Collections.emptyList();
+    }
+
+    public List<String> dependencies() {
+        if (mDependencies != null) {
+            return Collections.unmodifiableList(mDependencies);
+        }
+        return Collections.emptyList();
+    }
+
+    public Set<String> categories() {
+        if (mCategories != null) {
+            return Collections.unmodifiableSet(mCategories);
+        }
+        return Collections.emptySet();
+    }
+
     public IProvider<T> provider() {
         // Infer the provider if not specified.
         if (mProvider == null) {
@@ -67,23 +104,12 @@ public class ServiceRegistration<T extends IService> {
         return mProvider;
     }
 
-    public boolean enabled() {
-        return mEnabled;
-    }
-
-    public Set<String> categories() {
-        if (mCategories != null) {
-            return Collections.unmodifiableSet(mCategories);
-        }
-        return Collections.emptySet();
-    }
-
     //==============================================================================================
     // Setters
     //==============================================================================================
 
-    public ServiceRegistration<T> provider(IProvider<T> provider) {
-        mProvider = provider;
+    protected ServiceRegistration<T> label(String label) {
+        mLabel = label;
         return this;
     }
 
@@ -97,7 +123,36 @@ public class ServiceRegistration<T extends IService> {
         return this;
     }
 
-    public ServiceRegistration<T> categories(String... categories) {
+    public ServiceRegistration<T> require(ICondition condition) {
+        if (condition != null) {
+            if (mPrerequisites == null) {
+                mPrerequisites = new LinkedList<>();
+            }
+            if (!mPrerequisites.contains(condition)) {
+                mPrerequisites.add(condition);
+            }
+        }
+        return this;
+    }
+
+    protected ServiceRegistration<T> dependsOn(Class<? extends ModuleRegistration> moduleClass) {
+        final String moduleName = moduleClass.getName();
+        return dependsOn(moduleName);
+    }
+
+    public ServiceRegistration<T> dependsOn(String moduleName) {
+        if (moduleName != null) {
+            if (mDependencies == null) {
+                mDependencies = new LinkedList<>();
+            }
+            if (!mDependencies.contains(moduleName)) {
+                mDependencies.add(moduleName);
+            }
+        }
+        return this;
+    }
+
+    public ServiceRegistration<T> categorise(String... categories) {
         if (categories != null && categories.length > 0) {
             if (mCategories == null) {
                 mCategories = new LinkedHashSet<>();
@@ -107,7 +162,12 @@ public class ServiceRegistration<T extends IService> {
         return this;
     }
 
-    public ServiceRegistration<T> service(T service) {
+    public ServiceRegistration<T> provide(IProvider<T> provider) {
+        mProvider = provider;
+        return this;
+    }
+
+    public ServiceRegistration<T> provide(T service) {
         mInstance = service;
         return this;
     }
