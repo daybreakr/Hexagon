@@ -1,7 +1,6 @@
-package com.honeycomb.hexagon.resolve;
+package com.honeycomb.hexagon;
 
-import com.honeycomb.basement.condition.ICondition;
-import com.honeycomb.hexagon.HexagonEngine;
+import com.honeycomb.hexagon.core.Condition;
 import com.honeycomb.hexagon.core.ControllerInfo;
 import com.honeycomb.hexagon.core.ModuleInfo;
 import com.honeycomb.hexagon.core.ModuleItemInfo;
@@ -143,7 +142,7 @@ public class ModuleResolver {
         }
 
         // Check prerequisites
-        for (ICondition prerequisite : moduleItem.prerequisites()) {
+        for (Condition prerequisite : moduleItem.prerequisites()) {
             if (!prerequisite.isSatisfied()) {
                 throw new Exception("Prerequisite not satisfied: "
                         + prerequisite.getClass().getSimpleName());

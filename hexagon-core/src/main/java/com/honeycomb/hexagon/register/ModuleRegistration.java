@@ -1,7 +1,7 @@
 package com.honeycomb.hexagon.register;
 
-import com.honeycomb.basement.condition.ICondition;
 import com.honeycomb.basement.provider.IProvider;
+import com.honeycomb.hexagon.core.Condition;
 import com.honeycomb.hexagon.core.IController;
 import com.honeycomb.hexagon.core.IService;
 
@@ -15,7 +15,7 @@ public abstract class ModuleRegistration {
 
     private String mLabel;
     private boolean mEnabled = true;
-    private List<ICondition> mPrerequisites;
+    private List<Condition> mPrerequisites;
     private List<String> mDependencies;
 
     private List<ControllerRegistration<?>> mControllers;
@@ -48,7 +48,7 @@ public abstract class ModuleRegistration {
         return mEnabled;
     }
 
-    public List<ICondition> prerequisites() {
+    public List<Condition> prerequisites() {
         if (mPrerequisites != null) {
             return Collections.unmodifiableList(mPrerequisites);
         }
@@ -95,13 +95,16 @@ public abstract class ModuleRegistration {
         return this;
     }
 
-    protected ModuleRegistration require(ICondition condition) {
+    protected ModuleRegistration require(Condition condition) {
         if (condition != null) {
             if (mPrerequisites == null) {
                 mPrerequisites = new LinkedList<>();
             }
             if (!mPrerequisites.contains(condition)) {
                 mPrerequisites.add(condition);
+                for (String dependency : condition.dependencies()) {
+                    dependsOn(dependency);
+                }
             }
         }
         return this;

@@ -1,6 +1,6 @@
-package com.honeycomb.hexagon.core;
+package com.honeycomb.hexagon;
 
-import com.honeycomb.hexagon.HexagonEngine;
+import com.honeycomb.hexagon.core.IService;
 
 import java.util.HashMap;
 import java.util.Map;

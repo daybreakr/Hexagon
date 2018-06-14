@@ -1,9 +1,12 @@
-package com.honeycomb.hexagon.register;
+package com.honeycomb.hexagon;
 
-import com.honeycomb.hexagon.HexagonEngine;
 import com.honeycomb.hexagon.core.ControllerInfo;
 import com.honeycomb.hexagon.core.ModuleInfo;
 import com.honeycomb.hexagon.core.ServiceInfo;
+import com.honeycomb.hexagon.register.ControllerRegistration;
+import com.honeycomb.hexagon.register.ModuleList;
+import com.honeycomb.hexagon.register.ModuleRegistration;
+import com.honeycomb.hexagon.register.ServiceRegistration;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

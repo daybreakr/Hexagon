@@ -1,10 +1,7 @@
 package com.honeycomb.hexagon;
 
-import com.honeycomb.hexagon.core.ControllerRegistry;
-import com.honeycomb.hexagon.core.ModuleRegistry;
-import com.honeycomb.hexagon.core.ServiceManager;
-import com.honeycomb.hexagon.core.ServiceRegistry;
-import com.honeycomb.hexagon.register.ModuleRegistrar;
+import com.honeycomb.hexagon.core.IController;
+import com.honeycomb.hexagon.core.IService;
 
 public class HexagonEngine {
     private final ModuleRegistry mModuleRegistry;
@@ -26,6 +23,10 @@ public class HexagonEngine {
         mModuleRegistrar.setEngine(this);
     }
 
+    //==============================================================================================
+    // Getters
+    //==============================================================================================
+
     public ModuleRegistry getModuleRegistry() {
         return mModuleRegistry;
     }
@@ -45,6 +46,50 @@ public class HexagonEngine {
     public ModuleRegistrar getModuleRegistrar() {
         return mModuleRegistrar;
     }
+
+    //==============================================================================================
+    // Controller interfaces
+    //==============================================================================================
+
+    public <T extends IController> T getController(Class<T> controllerClass) {
+        return mControllerRegistry.getController(controllerClass);
+    }
+
+    public <T extends IController> T getController(String name) {
+        return mControllerRegistry.getController(name);
+    }
+
+    //==============================================================================================
+    // Service interfaces
+    //==============================================================================================
+
+    public boolean startService(Class<? extends IService> serviceClass) {
+        return mServiceManager.startService(serviceClass);
+    }
+
+    public boolean startService(String name) {
+        return mServiceManager.startService(name);
+    }
+
+    public boolean startServices(String category) {
+        return mServiceManager.startServices(category);
+    }
+
+    public boolean stopService(Class<? extends IService> serviceClass) {
+        return mServiceManager.stopService(serviceClass);
+    }
+
+    public boolean stopService(String name) {
+        return mServiceManager.stopService(name);
+    }
+
+    public boolean stopServices(String category) {
+        return mServiceManager.stopServices(category);
+    }
+
+    //==============================================================================================
+    // Factory methods
+    //==============================================================================================
 
     public static HexagonEngine create() {
         return buildUpon().build();

@@ -1,4 +1,6 @@
-package com.honeycomb.hexagon.core;
+package com.honeycomb.hexagon;
+
+import com.honeycomb.hexagon.core.ModuleInfo;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;

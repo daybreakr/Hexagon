@@ -1,10 +1,10 @@
 package com.honeycomb.hexagon.register;
 
-import com.honeycomb.basement.condition.ICondition;
 import com.honeycomb.basement.provider.IProvider;
 import com.honeycomb.basement.provider.InstanceProvider;
 import com.honeycomb.basement.provider.ReflectiveProvider;
 import com.honeycomb.basement.provider.SingletonProviderWrapper;
+import com.honeycomb.hexagon.core.Condition;
 import com.honeycomb.hexagon.core.IService;
 
 import java.util.Collections;
@@ -17,7 +17,7 @@ public class ServiceRegistration<T extends IService> {
     private final Class<T> mServiceClass;
     private String mLabel;
     private boolean mEnabled = true;
-    private List<ICondition> mPrerequisites;
+    private List<Condition> mPrerequisites;
     private List<String> mDependencies;
 
     private Set<String> mCategories;
@@ -64,7 +64,7 @@ public class ServiceRegistration<T extends IService> {
         return mEnabled;
     }
 
-    public List<ICondition> prerequisites() {
+    public List<Condition> prerequisites() {
         if (mPrerequisites != null) {
             return Collections.unmodifiableList(mPrerequisites);
         }
@@ -123,7 +123,7 @@ public class ServiceRegistration<T extends IService> {
         return this;
     }
 
-    public ServiceRegistration<T> require(ICondition condition) {
+    public ServiceRegistration<T> require(Condition condition) {
         if (condition != null) {
             if (mPrerequisites == null) {
                 mPrerequisites = new LinkedList<>();

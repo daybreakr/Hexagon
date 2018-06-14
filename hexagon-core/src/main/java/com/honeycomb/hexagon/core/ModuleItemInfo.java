@@ -1,7 +1,5 @@
 package com.honeycomb.hexagon.core;
 
-import com.honeycomb.basement.condition.ICondition;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -11,7 +9,7 @@ public abstract class ModuleItemInfo {
     private final String mName;
     private String mLabel;
     private boolean mEnabled = true;
-    private final List<ICondition> mPrerequisites;
+    private final List<Condition> mPrerequisites;
     private final List<String> mDependencies;
 
     private boolean mResolved = false;
@@ -50,7 +48,7 @@ public abstract class ModuleItemInfo {
         return mEnabled;
     }
 
-    public List<ICondition> prerequisites() {
+    public List<Condition> prerequisites() {
         return Collections.unmodifiableList(mPrerequisites);
     }
 
@@ -78,7 +76,7 @@ public abstract class ModuleItemInfo {
         mEnabled = enabled;
     }
 
-    public void prerequisites(Collection<ICondition> prerequisites) {
+    public void prerequisites(Collection<Condition> prerequisites) {
         if (prerequisites != null && !prerequisites.isEmpty()) {
             mPrerequisites.addAll(prerequisites);
         }

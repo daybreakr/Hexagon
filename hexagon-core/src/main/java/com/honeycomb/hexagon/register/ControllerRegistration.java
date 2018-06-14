@@ -1,10 +1,10 @@
 package com.honeycomb.hexagon.register;
 
-import com.honeycomb.basement.condition.ICondition;
 import com.honeycomb.basement.provider.IProvider;
 import com.honeycomb.basement.provider.InstanceProvider;
 import com.honeycomb.basement.provider.ReflectiveProvider;
 import com.honeycomb.basement.provider.SingletonProviderWrapper;
+import com.honeycomb.hexagon.core.Condition;
 import com.honeycomb.hexagon.core.IController;
 
 import java.util.Collections;
@@ -15,7 +15,7 @@ public class ControllerRegistration<T extends IController> {
     private final Class<T> mApiClass;
     private String mLabel;
     private boolean mEnabled = true;
-    private List<ICondition> mPrerequisites;
+    private List<Condition> mPrerequisites;
     private List<String> mDependencies;
 
     private IProvider<T> mProvider;
@@ -78,7 +78,7 @@ public class ControllerRegistration<T extends IController> {
         return mEnabled;
     }
 
-    public List<ICondition> prerequisites() {
+    public List<Condition> prerequisites() {
         if (mPrerequisites != null) {
             return Collections.unmodifiableList(mPrerequisites);
         }
@@ -133,7 +133,7 @@ public class ControllerRegistration<T extends IController> {
         return this;
     }
 
-    public ControllerRegistration<T> require(ICondition condition) {
+    public ControllerRegistration<T> require(Condition condition) {
         if (condition != null) {
             if (mPrerequisites == null) {
                 mPrerequisites = new LinkedList<>();
