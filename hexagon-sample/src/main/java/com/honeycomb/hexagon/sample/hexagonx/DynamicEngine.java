@@ -1,10 +1,14 @@
 package com.honeycomb.hexagon.sample.hexagonx;
 
 import com.honeycomb.hexagon.HexagonEngine;
+import com.honeycomb.hexagon.core.ControllerInfo;
 import com.honeycomb.hexagon.core.IController;
 import com.honeycomb.hexagon.core.IService;
+import com.honeycomb.hexagon.core.ModuleInfo;
+import com.honeycomb.hexagon.core.ServiceInfo;
 import com.honeycomb.hexagon.register.ModuleList;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DynamicEngine {
@@ -20,8 +24,7 @@ public class DynamicEngine {
             sEngine = injection.provideEngine();
 
             // Install bootstrap modules.
-            ModuleList bootstrapModules = injection.provideBootstrapModules();
-            sEngine.installModules(bootstrapModules);
+            install(injection.provideBootstrapModules());
         }
     }
 
@@ -30,30 +33,54 @@ public class DynamicEngine {
     }
 
     //==============================================================================================
+    // Install
+    //==============================================================================================
+
+    public static void install(ModuleList moduleList) {
+        sEngine.installModules(moduleList);
+    }
+
+    //==============================================================================================
+    // Module interfaces
+    //==============================================================================================
+
+    public static List<ModuleInfo> modules() {
+        return sEngine.getModuleRegistry().getRegisteredModules();
+    }
+
+    //==============================================================================================
     // Controller interfaces
     //==============================================================================================
 
+    public ControllerInfo controllerInfo(String name) {
+        return sEngine.getControllerRegistry().getControllerInfo(name);
+    }
+
     public static <T extends IController> T controller(Class<T> controllerClass) {
-        return sEngine.getController(controllerClass);
+        return sEngine.getControllerRegistry().getController(controllerClass);
     }
 
     //==============================================================================================
     // Service interfaces
     //==============================================================================================
 
+    public ServiceInfo serviceInfo(String name) {
+        return sEngine.getServiceRegistry().getServiceInfo(name);
+    }
+
     public static boolean start(Class<? extends IService> serviceClass) {
-        return sEngine.startService(serviceClass);
+        return sEngine.getServiceManager().startService(serviceClass);
     }
 
     public static boolean startAll(String category) {
-        return sEngine.startServices(category);
+        return sEngine.getServiceManager().startServices(category);
     }
 
     public static boolean stop(Class<? extends IService> serviceClass) {
-        return sEngine.stopService(serviceClass);
+        return sEngine.getServiceManager().stopService(serviceClass);
     }
 
     public static boolean stopAll(String category) {
-        return sEngine.stopServices(category);
+        return sEngine.getServiceManager().stopServices(category);
     }
 }

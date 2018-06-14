@@ -1,7 +1,5 @@
 package com.honeycomb.hexagon;
 
-import com.honeycomb.hexagon.core.IController;
-import com.honeycomb.hexagon.core.IService;
 import com.honeycomb.hexagon.register.ModuleList;
 
 public class HexagonEngine {
@@ -57,7 +55,7 @@ public class HexagonEngine {
     }
 
     //==============================================================================================
-    // Register
+    // Install
     //==============================================================================================
 
     public void installModules(ModuleList moduleList) {
@@ -66,46 +64,6 @@ public class HexagonEngine {
 
         // Resolve all modules after new modules added.
         mModuleResolver.resolve();
-    }
-
-    //==============================================================================================
-    // Controller interfaces
-    //==============================================================================================
-
-    public <T extends IController> T getController(Class<T> controllerClass) {
-        return mControllerRegistry.getController(controllerClass);
-    }
-
-    public <T extends IController> T getController(String name) {
-        return mControllerRegistry.getController(name);
-    }
-
-    //==============================================================================================
-    // Service interfaces
-    //==============================================================================================
-
-    public boolean startService(Class<? extends IService> serviceClass) {
-        return mServiceManager.startService(serviceClass);
-    }
-
-    public boolean startService(String name) {
-        return mServiceManager.startService(name);
-    }
-
-    public boolean startServices(String category) {
-        return mServiceManager.startServices(category);
-    }
-
-    public boolean stopService(Class<? extends IService> serviceClass) {
-        return mServiceManager.stopService(serviceClass);
-    }
-
-    public boolean stopService(String name) {
-        return mServiceManager.stopService(name);
-    }
-
-    public boolean stopServices(String category) {
-        return mServiceManager.stopServices(category);
     }
 
     //==============================================================================================

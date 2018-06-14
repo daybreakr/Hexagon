@@ -15,10 +15,18 @@ android {
 }
 
 dependencies {
-    implementation deps.support.appcompat
     implementation project(':hexagon-core')
 
+    implementation deps.support.appcompat
+    implementation deps.support.cardview
+
+    //==============================================================================================
+    // Unit test
+    //==============================================================================================
     testImplementation deps.test.junit
 
+    //==============================================================================================
+    // Android test
+    //==============================================================================================
     androidTestImplementation deps.test.androidJunit
 }

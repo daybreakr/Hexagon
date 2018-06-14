@@ -29,16 +29,16 @@ public class ModuleRegistry {
         return mModules.containsKey(name);
     }
 
-    public Set<String> getRegisteredModuleNames() {
-        return new LinkedHashSet<>(mModules.keySet());
-    }
-
     public ModuleInfo getModuleInfo(String name) {
         ModuleInfo module = mModules.get(name);
         if (module != null) {
             return new ModuleInfo(module);
         }
         return null;
+    }
+
+    public Set<String> getRegisteredModuleNames() {
+        return new LinkedHashSet<>(mModules.keySet());
     }
 
     public List<ModuleInfo> getRegisteredModules() {
@@ -50,12 +50,10 @@ public class ModuleRegistry {
     }
 
     public void resolved(String name, boolean enabled) {
-        if (name != null) {
-            ModuleInfo module = mModules.get(name);
-            if (module != null) {
-                module.enabled(enabled);
-                module.resolve();
-            }
+        ModuleInfo module = mModules.get(name);
+        if (module != null) {
+            module.enabled(enabled);
+            module.resolve();
         }
     }
 }
