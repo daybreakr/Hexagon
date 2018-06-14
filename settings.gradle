@@ -1,2 +1,3 @@
-include ':hexagon-core'
 include ':honeycomb-basement'
+
+include ':hexagon-core'
