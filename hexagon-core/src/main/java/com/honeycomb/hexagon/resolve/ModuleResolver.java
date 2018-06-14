@@ -11,11 +11,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ModuleResolver {
     private HexagonEngine mEngine;
 
-    private Stack<String> mResolving;
+    private final AtomicBoolean mResolving = new AtomicBoolean(false);
+    private final Stack<String> mResolvingModules = new Stack<>();
 
     public void setEngine(HexagonEngine engine) {
         mEngine = engine;
@@ -26,92 +28,109 @@ public class ModuleResolver {
             throw new IllegalStateException("Engine not attached.");
         }
 
-        if (mResolving != null) {
-            return;
-        }
-        mResolving = new Stack<>();
+        if (mResolving.compareAndSet(false, true)) {
+            try {
+                mResolvingModules.clear();
 
-        Set<String> modules = mEngine.getModuleRegistry().getRegisteredModuleNames();
-        for (String module : modules) {
-            resolveModule(module);
+                Set<String> modules = mEngine.getModuleRegistry().getRegisteredModuleNames();
+
+                for (String module : modules) {
+                    resolveModule(module);
+                }
+            } finally {
+                mResolving.set(false);
+            }
         }
     }
 
     private boolean resolveModule(String name) {
         ModuleInfo module = mEngine.getModuleRegistry().getModuleInfo(name);
         if (module == null) {
-            // TODO: Warn if module not registered
+            // TODO: Warn module not registered
             return false;
         }
-        return resolveModule(module);
-    }
 
-    private boolean resolveModule(ModuleInfo module) {
+        // Returns immediately if already resolved.
         if (module.resolved()) {
             return true;
         }
-        final String name = module.name();
 
-        if (mResolving.contains(name)) {
+        // Check circular dependency.
+        if (mResolvingModules.contains(name)) {
             throw new IllegalStateException("Module " + module.label() + " is resolving"
                     + ", circular dependency may occurred: " + dumpResolving());
         }
 
-        mResolving.push(name);
+        // Mark module resolving, if this module appeared again, circular dependency occurred.
+        mResolvingModules.push(name);
+        boolean resolved = false;
         try {
-            resolve(module);
-            return true;
+            resolveModuleItem(module);
+
+            // Resolve controllers.
+            for (String controller : module.controllers()) {
+                resolveController(controller);
+            }
+
+            // Resolve services.
+            for (String service : module.services()) {
+                resolveService(service);
+            }
+
+            resolved = true;
         } catch (Exception e) {
-            // TODO: Warn resolve exception
-            disable(module);
-            return false;
+            // TODO: Warn failed to resolve module
         } finally {
-            mResolving.pop();
+            mResolvingModules.pop();
+            moduleResolved(module, resolved);
         }
+
+        return resolved;
     }
 
     private void resolveController(String name) {
         ControllerInfo controller = mEngine.getControllerRegistry().getControllerInfo(name);
         if (controller == null) {
-            // TODO: Warn if controller not registered
+            // TODO: Warn controller not registered.
             return;
         }
-        resolveController(controller);
-    }
 
-    private void resolveController(ControllerInfo controller) {
+        // Returns immediately if already resolved.
         if (controller.resolved()) {
             return;
         }
-        final String name = controller.name();
 
-        if (mResolving.contains(name)) {
-            throw new IllegalStateException("Module " + module.label() + " is resolving"
-                    + ", circular dependency may occurred: " + dumpResolving());
-        }
-
-        mResolving.push(name);
+        boolean resolved = false;
         try {
-            resolve(module);
+            resolveModuleItem(controller);
+            resolved = true;
         } catch (Exception e) {
-            // TODO: Warn resolve exception
-            disable(module);
+            // TODO: Warn failed to resolve controller.
         } finally {
-            mResolving.pop();
+            controllerResolved(name, resolved);
         }
     }
 
-    private void resolve(ModuleInfo module) throws Exception {
-        resolveModuleItem(module);
-
-        // Resolve controllers.
-        for (String controller : module.controllers()) {
-            resolveController(controller);
+    private void resolveService(String name) {
+        ServiceInfo service = mEngine.getServiceRegistry().getServiceInfo(name);
+        if (service == null) {
+            // TODO: Warn if controller not registered
+            return;
         }
 
-        // Resolve services.
-        for (String service : module.services()) {
-            resolveService(service);
+        // Returns immediately if already resolved.
+        if (service.resolved()) {
+            return;
+        }
+
+        boolean resolved = false;
+        try {
+            resolveModuleItem(service);
+            resolved = true;
+        } catch (Exception e) {
+            // TODO: Warn failed to resolve controller.
+        } finally {
+            serviceResolved(name, resolved);
         }
     }
 
@@ -132,17 +151,6 @@ public class ModuleResolver {
         }
     }
 
-
-
-    private boolean resolveService(String name) {
-        ServiceInfo service = mEngine.getServiceRegistry().getServiceInfo(name);
-        return resolve(service);
-    }
-
-    private boolean resolve(ServiceInfo service) {
-
-    }
-
     private void resolveDependencies(Collection<String> dependencies) throws Exception {
         if (dependencies != null && !dependencies.isEmpty()) {
             for (String dependency : dependencies) {
@@ -153,21 +161,32 @@ public class ModuleResolver {
         }
     }
 
-    private void disable(ModuleInfo module) {
-        // TODO
+    private void moduleResolved(ModuleInfo module, boolean enabled) {
+        mEngine.getModuleRegistry().resolved(module.name(), enabled);
+
+        // Disable controllers and services in this module when the module was disabled.
+        if (!enabled) {
+            for (String controller : module.controllers()) {
+                controllerResolved(controller, false);
+            }
+
+            for (String service : module.services()) {
+                serviceResolved(service, false);
+            }
+        }
     }
 
-    private void disable(ControllerInfo controller) {
-
+    private void controllerResolved(String name, boolean enabled) {
+        mEngine.getControllerRegistry().resolved(name, enabled);
     }
 
-    private void disable(ServiceInfo service) {
-
+    private void serviceResolved(String name, boolean enabled) {
+        mEngine.getServiceRegistry().resolved(name, enabled);
     }
 
     private String dumpResolving() {
         StringBuilder resolving = new StringBuilder();
-        Iterator<String> it = mResolving.iterator();
+        Iterator<String> it = mResolvingModules.iterator();
         while (it.hasNext()) {
             String module = it.next();
             resolving.append(module);

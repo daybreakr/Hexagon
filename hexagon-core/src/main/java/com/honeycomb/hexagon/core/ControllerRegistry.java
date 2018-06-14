@@ -76,6 +76,16 @@ public class ControllerRegistry {
         return null;
     }
 
+    public void resolved(String name, boolean enabled) {
+        if (name != null) {
+            ControllerInfo controller = mControllers.get(name);
+            if (controller != null) {
+                controller.enabled(enabled);
+                controller.resolve();
+            }
+        }
+    }
+
     private IController provideController(String name) {
         ControllerInfo controller = mControllers.get(name);
         if (controller != null && controller.active()) {

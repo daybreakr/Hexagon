@@ -153,6 +153,16 @@ public class ServiceRegistry {
         return services;
     }
 
+    public void resolved(String name, boolean enabled) {
+        if (name != null) {
+            ServiceInfo service = mServices.get(name);
+            if (service != null) {
+                service.enabled(enabled);
+                service.resolve();
+            }
+        }
+    }
+
     private void registerCategory(String name, String category) {
         Set<String> services = mCategories.get(category);
         if (services == null) {

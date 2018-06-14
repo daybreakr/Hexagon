@@ -46,4 +46,14 @@ public class ModuleRegistry {
         }
         return modules;
     }
+
+    public void resolved(String name, boolean enabled) {
+        if (name != null) {
+            ModuleInfo module = mModules.get(name);
+            if (module != null) {
+                module.enabled(enabled);
+                module.resolve();
+            }
+        }
+    }
 }
