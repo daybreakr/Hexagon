@@ -3,6 +3,7 @@
     package="com.honeycomb.hexagon.sample">
 
     <application
+        android:name=".HexagonSampleApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">

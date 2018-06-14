@@ -3,7 +3,7 @@ package com.honeycomb.hexagon.sample.modules.update;
 import com.honeycomb.basement.provider.IProvider;
 import com.honeycomb.basement.provider.SingletonProvider;
 import com.honeycomb.hexagon.sample.hexagonx.DynamicServices;
-import com.honeycomb.hexagon.sample.hexagonx.DynamicModuleRegistration;
+import com.honeycomb.hexagon.sample.hexagonx.register.DynamicModuleRegistration;
 import com.honeycomb.hexagon.sample.modules.loaderinfo.LoaderInfo;
 
 public class UpdateModule extends DynamicModuleRegistration {

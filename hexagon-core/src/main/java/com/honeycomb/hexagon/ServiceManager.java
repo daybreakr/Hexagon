@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class ServiceManager {
-    private final Map<String, ServiceRecord> mRecords = new HashMap<>();
-
     private HexagonEngine mEngine;
+
+    private final Map<String, ServiceRecord> mRecords = new HashMap<>();
 
     public void setEngine(HexagonEngine engine) {
         mEngine = engine;

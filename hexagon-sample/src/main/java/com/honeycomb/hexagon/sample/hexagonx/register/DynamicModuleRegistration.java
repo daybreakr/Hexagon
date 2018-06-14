@@ -1,4 +1,4 @@
-package com.honeycomb.hexagon.sample.hexagonx;
+package com.honeycomb.hexagon.sample.hexagonx.register;
 
 import com.honeycomb.hexagon.register.ModuleRegistration;
 import com.honeycomb.hexagon.sample.hexagonx.conditions.MinLoaderVersionCondition;

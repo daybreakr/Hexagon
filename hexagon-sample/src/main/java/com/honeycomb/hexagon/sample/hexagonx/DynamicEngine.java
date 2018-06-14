@@ -3,12 +3,26 @@ package com.honeycomb.hexagon.sample.hexagonx;
 import com.honeycomb.hexagon.HexagonEngine;
 import com.honeycomb.hexagon.core.IController;
 import com.honeycomb.hexagon.core.IService;
+import com.honeycomb.hexagon.register.ModuleList;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DynamicEngine {
     private static HexagonEngine sEngine;
 
+    private static final AtomicBoolean sStarted = new AtomicBoolean(false);
+
     public static void start() {
-        sEngine = HexagonEngine.create();
+        if (sStarted.compareAndSet(false, true)) {
+            DynamicEngineInjection injection = DynamicEngineInjection.create();
+
+            // Create Engine.
+            sEngine = injection.provideEngine();
+
+            // Install bootstrap modules.
+            ModuleList bootstrapModules = injection.provideBootstrapModules();
+            sEngine.installModules(bootstrapModules);
+        }
     }
 
     public static HexagonEngine get() {

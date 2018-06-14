@@ -2,25 +2,30 @@ package com.honeycomb.hexagon;
 
 import com.honeycomb.hexagon.core.IController;
 import com.honeycomb.hexagon.core.IService;
+import com.honeycomb.hexagon.register.ModuleList;
 
 public class HexagonEngine {
     private final ModuleRegistry mModuleRegistry;
     private final ControllerRegistry mControllerRegistry;
     private final ServiceRegistry mServiceRegistry;
 
-    private final ServiceManager mServiceManager;
     private final ModuleRegistrar mModuleRegistrar;
+    private final ModuleResolver mModuleResolver;
+    private final ServiceManager mServiceManager;
 
     private HexagonEngine(Builder builder) {
         mModuleRegistry = builder.moduleRegistry;
         mControllerRegistry = builder.controllerRegistry;
         mServiceRegistry = builder.serviceRegistry;
 
-        mServiceManager = builder.serviceManager;
-        mServiceManager.setEngine(this);
-
         mModuleRegistrar = builder.registrar;
         mModuleRegistrar.setEngine(this);
+
+        mModuleResolver = builder.resolver;
+        mModuleResolver.setEngine(this);
+
+        mServiceManager = builder.serviceManager;
+        mServiceManager.setEngine(this);
     }
 
     //==============================================================================================
@@ -39,12 +44,28 @@ public class HexagonEngine {
         return mServiceRegistry;
     }
 
+    public ModuleRegistrar getModuleRegistrar() {
+        return mModuleRegistrar;
+    }
+
+    public ModuleResolver getModuleResolver() {
+        return mModuleResolver;
+    }
+
     public ServiceManager getServiceManager() {
         return mServiceManager;
     }
 
-    public ModuleRegistrar getModuleRegistrar() {
-        return mModuleRegistrar;
+    //==============================================================================================
+    // Register
+    //==============================================================================================
+
+    public void installModules(ModuleList moduleList) {
+        // Register modules.
+        mModuleRegistrar.register(moduleList);
+
+        // Resolve all modules after new modules added.
+        mModuleResolver.resolve();
     }
 
     //==============================================================================================
@@ -104,8 +125,9 @@ public class HexagonEngine {
         ControllerRegistry controllerRegistry;
         ServiceRegistry serviceRegistry;
 
-        ServiceManager serviceManager;
         ModuleRegistrar registrar;
+        ModuleResolver resolver;
+        ServiceManager serviceManager;
 
         public Builder moduleRegistry(ModuleRegistry registry) {
             this.moduleRegistry = registry;
@@ -122,13 +144,18 @@ public class HexagonEngine {
             return this;
         }
 
-        public Builder serviceManager(ServiceManager manager) {
-            this.serviceManager = manager;
+        public Builder moduleRegistrar(ModuleRegistrar registrar) {
+            this.registrar = registrar;
             return this;
         }
 
-        public Builder moduleRegistrar(ModuleRegistrar registrar) {
-            this.registrar = registrar;
+        public Builder moduleResolver(ModuleResolver resolver) {
+            this.resolver = resolver;
+            return this;
+        }
+
+        public Builder serviceManager(ServiceManager manager) {
+            this.serviceManager = manager;
             return this;
         }
 
@@ -145,12 +172,16 @@ public class HexagonEngine {
                 serviceRegistry = new ServiceRegistry();
             }
 
-            if (serviceManager == null) {
-                serviceManager = new ServiceManager();
-            }
-
             if (registrar == null) {
                 registrar = new ModuleRegistrar();
+            }
+
+            if (resolver == null) {
+                resolver = new ModuleResolver();
+            }
+
+            if (serviceManager == null) {
+                serviceManager = new ServiceManager();
             }
 
             return new HexagonEngine(this);
