@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/hexagon-core" />
+            <option value="$PROJECT_DIR$/hexagon-sample" />
             <option value="$PROJECT_DIR$/honeycomb-basement" />
           </set>
         </option>

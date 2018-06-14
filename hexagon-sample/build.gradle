@@ -1,21 +1,21 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion versions.compileSdk
 
     defaultConfig {
+        applicationId "com.honeycomb.hexagon.sample"
         minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode 1
+        versionName "1.0"
 
         testInstrumentationRunner runners.androidJUnitRunner
-    }
-
-    libraryVariants.all {
-        it.generateBuildConfig.enabled false
     }
 }
 
 dependencies {
-    api project(':honeycomb-basement')
+    implementation deps.support.appcompat
 
     testImplementation deps.test.junit
 
