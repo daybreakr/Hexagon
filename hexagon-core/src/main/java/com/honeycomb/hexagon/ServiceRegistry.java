@@ -1,8 +1,8 @@
 package com.honeycomb.hexagon;
 
-import com.honeycomb.basement.provider.IProvider;
 import com.honeycomb.hexagon.core.IService;
 import com.honeycomb.hexagon.core.ServiceInfo;
+import com.honeycomb.provider.IProvider;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;

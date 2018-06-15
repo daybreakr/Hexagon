@@ -1,4 +1,4 @@
-package com.honeycomb.basement.provider;
+package com.honeycomb.provider;
 
 public class SingletonProviderWrapper<T> extends SingletonProvider<T> {
     private final IProvider<T> mProvider;

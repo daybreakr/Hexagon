@@ -1,4 +1,4 @@
-package com.honeycomb.basement.provider;
+package com.honeycomb.provider;
 
 public abstract class FactoryProvider<T> implements IProvider<T> {
 

@@ -1,9 +1,9 @@
 package com.honeycomb.hexagon.register;
 
-import com.honeycomb.basement.provider.IProvider;
 import com.honeycomb.hexagon.core.Condition;
 import com.honeycomb.hexagon.core.IController;
 import com.honeycomb.hexagon.core.IService;
+import com.honeycomb.provider.IProvider;
 
 import java.util.Collections;
 import java.util.LinkedList;

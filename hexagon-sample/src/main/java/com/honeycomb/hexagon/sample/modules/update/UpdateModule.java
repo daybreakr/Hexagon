@@ -1,10 +1,10 @@
 package com.honeycomb.hexagon.sample.modules.update;
 
-import com.honeycomb.basement.provider.IProvider;
-import com.honeycomb.basement.provider.SingletonProvider;
 import com.honeycomb.hexagon.sample.hexagonx.DynamicServices;
 import com.honeycomb.hexagon.sample.hexagonx.register.DynamicModuleRegistration;
 import com.honeycomb.hexagon.sample.modules.loaderinfo.LoaderInfo;
+import com.honeycomb.provider.IProvider;
+import com.honeycomb.provider.SingletonProvider;
 
 public class UpdateModule extends DynamicModuleRegistration {
 

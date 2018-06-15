@@ -1,4 +1,4 @@
-package com.honeycomb.basement.provider;
+package com.honeycomb.provider;
 
 public abstract class SingletonProvider<T> implements IProvider<T> {
     private T mInstance;

@@ -1,15 +1,15 @@
 package com.honeycomb.hexagon.sample.modules.server;
 
-import com.honeycomb.basement.provider.IProvider;
-import com.honeycomb.basement.provider.SingletonProvider;
 import com.honeycomb.hexagon.register.ModuleRegistration;
+import com.honeycomb.provider.IProvider;
+import com.honeycomb.provider.SingletonProvider;
 
 public class ServerModule extends ModuleRegistration {
 
     @Override
     protected void onRegister() {
         label("Server");
-        
+
         controller(AppServer.class, provideAppServer());
         controller(ConsoleServer.class, provideConsoleServer());
 

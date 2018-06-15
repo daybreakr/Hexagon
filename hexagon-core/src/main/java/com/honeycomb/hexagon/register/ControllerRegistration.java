@@ -1,11 +1,11 @@
 package com.honeycomb.hexagon.register;
 
-import com.honeycomb.basement.provider.IProvider;
-import com.honeycomb.basement.provider.InstanceProvider;
-import com.honeycomb.basement.provider.ReflectiveProvider;
-import com.honeycomb.basement.provider.SingletonProviderWrapper;
 import com.honeycomb.hexagon.core.Condition;
 import com.honeycomb.hexagon.core.IController;
+import com.honeycomb.provider.IProvider;
+import com.honeycomb.provider.InstanceProvider;
+import com.honeycomb.provider.ReflectiveProvider;
+import com.honeycomb.provider.SingletonProviderWrapper;
 
 import java.util.Collections;
 import java.util.LinkedList;

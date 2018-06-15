@@ -1,6 +1,6 @@
 package com.honeycomb.hexagon.register;
 
-import com.honeycomb.basement.provider.ReflectiveProvider;
+import com.honeycomb.provider.ReflectiveProvider;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

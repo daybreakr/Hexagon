@@ -1,4 +1,4 @@
-package com.honeycomb.basement.provider;
+package com.honeycomb.provider;
 
 public class InstanceProvider<T> implements IProvider<T> {
     private final T mInstance;
