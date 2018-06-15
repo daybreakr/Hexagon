@@ -19,6 +19,7 @@ dependencies {
 
     implementation deps.support.appcompat
     implementation deps.support.cardview
+    implementation deps.support.recyclerview
 
     //==============================================================================================
     // Unit test

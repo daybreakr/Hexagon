@@ -60,7 +60,7 @@ public class Hexagon {
     // Controller interfaces
     //==============================================================================================
 
-    public ControllerInfo controllerInfo(String name) {
+    public static ControllerInfo controllerInfo(String name) {
         return engine().controllerInfo(name);
     }
 
@@ -72,7 +72,7 @@ public class Hexagon {
     // Service interfaces
     //==============================================================================================
 
-    public ServiceInfo serviceInfo(String name) {
+    public static ServiceInfo serviceInfo(String name) {
         return engine().serviceInfo(name);
     }
 
