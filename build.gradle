@@ -7,6 +7,7 @@ buildscript {
             targetSdk: 27,
 
             supportLibrary: '27.1.1',
+            honeycombLibrary: '0.0.10'
     ]
 
     ext.deps = [
@@ -20,6 +21,9 @@ buildscript {
                     appcompat: "com.android.support:appcompat-v7:${versions.supportLibrary}",
                     cardview: "com.android.support:cardview-v7:${versions.supportLibrary}",
                     recyclerview: "com.android.support:recyclerview-v7:${versions.supportLibrary}",
+            ],
+            honeycomb: [
+                    basement: "com.honeycomb:honeycomb-basement:${versions.honeycombLibrary}"
             ],
     ]
 
@@ -40,7 +44,8 @@ buildscript {
 
 subprojects {
     group = GROUP
-    version = VERSION_NAME
+    version = getVersionName()
+    ext.versionCode = getVersionCode()
 
     repositories {
         mavenLocal()
@@ -51,4 +56,15 @@ subprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+private static def getVersionName() {
+    def cmd = 'git describe --tags'
+    cmd.execute().text.trim()
+}
+
+private static def getVersionCode() {
+    // Get git commit count as version code.
+    def cmd = 'git rev-list HEAD --count'
+    cmd.execute().text.trim().toInteger()
 }

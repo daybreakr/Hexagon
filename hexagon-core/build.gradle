@@ -5,7 +5,6 @@ android {
 
     defaultConfig {
         minSdkVersion versions.minSdk
-
         testInstrumentationRunner runners.androidJUnitRunner
     }
 
@@ -15,9 +14,11 @@ android {
 }
 
 dependencies {
-    api project(':honeycomb-basement')
+    api deps.honeycomb.basement
 
     testImplementation deps.test.junit
-
     androidTestImplementation deps.test.androidJunit
 }
+
+apply from: rootProject.file('gradle/project-info.gradle')
+apply from: rootProject.file('gradle/maven-local-publish.gradle')

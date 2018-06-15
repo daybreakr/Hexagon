@@ -1,33 +1,28 @@
 apply plugin: 'com.android.application'
 
+ext.applicationId = "com.honeycomb.hexagon.sample"
+
 android {
     compileSdkVersion versions.compileSdk
 
     defaultConfig {
-        applicationId "com.honeycomb.hexagon.sample"
+        applicationId project.applicationId
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
-        versionCode 1
-        versionName "1.0"
-
+        versionCode project.versionCode
+        versionName project.version
         testInstrumentationRunner runners.androidJUnitRunner
     }
 }
 
 dependencies {
     implementation project(':hexagon-core')
-
     implementation deps.support.appcompat
     implementation deps.support.cardview
     implementation deps.support.recyclerview
 
-    //==============================================================================================
-    // Unit test
-    //==============================================================================================
     testImplementation deps.test.junit
-
-    //==============================================================================================
-    // Android test
-    //==============================================================================================
     androidTestImplementation deps.test.androidJunit
 }
+
+apply from: rootProject.file('gradle/project-info.gradle')
