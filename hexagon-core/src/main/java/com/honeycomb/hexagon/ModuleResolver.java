@@ -12,18 +12,12 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ModuleResolver {
-    private HexagonEngine mEngine;
-
+public class ModuleResolver extends HexagonComponent {
     private final AtomicBoolean mResolving = new AtomicBoolean(false);
     private final Stack<String> mResolvingModules = new Stack<>();
 
-    public void setEngine(HexagonEngine engine) {
-        mEngine = engine;
-    }
-
     public void resolve() {
-        if (mEngine == null) {
+        if (assembly() == null) {
             throw new IllegalStateException("Engine not attached.");
         }
 
@@ -31,7 +25,7 @@ public class ModuleResolver {
             try {
                 mResolvingModules.clear();
 
-                Set<String> modules = mEngine.getModuleRegistry().getRegisteredModuleNames();
+                Set<String> modules = assembly().moduleRegistry().getRegisteredModuleNames();
 
                 for (String module : modules) {
                     resolveModule(module);
@@ -43,7 +37,7 @@ public class ModuleResolver {
     }
 
     private boolean resolveModule(String name) {
-        ModuleInfo module = mEngine.getModuleRegistry().getModuleInfo(name);
+        ModuleInfo module = assembly().moduleRegistry().getModuleInfo(name);
         if (module == null) {
             // TODO: Warn module not registered
             return false;
@@ -88,7 +82,7 @@ public class ModuleResolver {
     }
 
     private void resolveController(String name) {
-        ControllerInfo controller = mEngine.getControllerRegistry().getControllerInfo(name);
+        ControllerInfo controller = assembly().controllerRegistry().getControllerInfo(name);
         if (controller == null) {
             // TODO: Warn controller not registered.
             return;
@@ -111,7 +105,7 @@ public class ModuleResolver {
     }
 
     private void resolveService(String name) {
-        ServiceInfo service = mEngine.getServiceRegistry().getServiceInfo(name);
+        ServiceInfo service = assembly().serviceRegistry().getServiceInfo(name);
         if (service == null) {
             // TODO: Warn if controller not registered
             return;
@@ -161,7 +155,7 @@ public class ModuleResolver {
     }
 
     private void moduleResolved(ModuleInfo module, boolean enabled) {
-        mEngine.getModuleRegistry().resolved(module.name(), enabled);
+        assembly().moduleRegistry().resolved(module.name(), enabled);
 
         // Disable controllers and services in this module when the module was disabled.
         if (!enabled) {
@@ -176,11 +170,11 @@ public class ModuleResolver {
     }
 
     private void controllerResolved(String name, boolean enabled) {
-        mEngine.getControllerRegistry().resolved(name, enabled);
+        assembly().controllerRegistry().resolved(name, enabled);
     }
 
     private void serviceResolved(String name, boolean enabled) {
-        mEngine.getServiceRegistry().resolved(name, enabled);
+        assembly().serviceRegistry().resolved(name, enabled);
     }
 
     private String dumpResolving() {

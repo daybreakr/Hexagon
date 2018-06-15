@@ -1,6 +1,5 @@
-package com.honeycomb.hexagon.sample.hexagonx;
+package com.honeycomb.hexagon;
 
-import com.honeycomb.hexagon.HexagonEngine;
 import com.honeycomb.hexagon.core.ControllerInfo;
 import com.honeycomb.hexagon.core.IController;
 import com.honeycomb.hexagon.core.IService;
@@ -9,26 +8,35 @@ import com.honeycomb.hexagon.core.ServiceInfo;
 import com.honeycomb.hexagon.register.ModuleList;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-public class DynamicEngine {
+public class Hexagon {
     private static HexagonEngine sEngine;
 
-    private static final AtomicBoolean sStarted = new AtomicBoolean(false);
+    private Hexagon() {
+    }
 
-    public static void start() {
-        if (sStarted.compareAndSet(false, true)) {
-            DynamicEngineInjection injection = DynamicEngineInjection.create();
+    public static void initialize() {
+        initialize(HexagonAssembly.create());
+    }
 
-            // Create Engine.
-            sEngine = injection.provideEngine();
+    public static void initialize(HexagonAssembly assembly) {
+        initialize(new HexagonEngine(assembly));
+    }
 
-            // Install bootstrap modules.
-            install(injection.provideBootstrapModules());
+    public static void initialize(HexagonEngine engine) {
+        if (engine != null) {
+            sEngine = engine;
         }
     }
 
-    public static HexagonEngine get() {
+    public static HexagonEngine engine() {
+        if (sEngine == null) {
+            synchronized (Hexagon.class) {
+                if (sEngine == null) {
+                    initialize();
+                }
+            }
+        }
         return sEngine;
     }
 
@@ -37,7 +45,7 @@ public class DynamicEngine {
     //==============================================================================================
 
     public static void install(ModuleList moduleList) {
-        sEngine.installModules(moduleList);
+        engine().install(moduleList);
     }
 
     //==============================================================================================
@@ -45,7 +53,7 @@ public class DynamicEngine {
     //==============================================================================================
 
     public static List<ModuleInfo> modules() {
-        return sEngine.getModuleRegistry().getRegisteredModules();
+        return engine().modules();
     }
 
     //==============================================================================================
@@ -53,11 +61,11 @@ public class DynamicEngine {
     //==============================================================================================
 
     public ControllerInfo controllerInfo(String name) {
-        return sEngine.getControllerRegistry().getControllerInfo(name);
+        return engine().controllerInfo(name);
     }
 
     public static <T extends IController> T controller(Class<T> controllerClass) {
-        return sEngine.getControllerRegistry().getController(controllerClass);
+        return engine().controller(controllerClass);
     }
 
     //==============================================================================================
@@ -65,22 +73,26 @@ public class DynamicEngine {
     //==============================================================================================
 
     public ServiceInfo serviceInfo(String name) {
-        return sEngine.getServiceRegistry().getServiceInfo(name);
+        return engine().serviceInfo(name);
     }
 
     public static boolean start(Class<? extends IService> serviceClass) {
-        return sEngine.getServiceManager().startService(serviceClass);
+        return engine().start(serviceClass);
     }
 
-    public static boolean startAll(String category) {
-        return sEngine.getServiceManager().startServices(category);
+    public static boolean startServices(String category) {
+        return engine().startAll(category);
     }
 
     public static boolean stop(Class<? extends IService> serviceClass) {
-        return sEngine.getServiceManager().stopService(serviceClass);
+        return engine().stop(serviceClass);
     }
 
-    public static boolean stopAll(String category) {
-        return sEngine.getServiceManager().stopServices(category);
+    public static boolean stopServices(String category) {
+        return engine().stopAll(category);
+    }
+
+    public static boolean stopAllServices() {
+        return engine().stopAll();
     }
 }

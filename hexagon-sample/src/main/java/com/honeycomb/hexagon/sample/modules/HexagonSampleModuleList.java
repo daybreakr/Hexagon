@@ -6,7 +6,7 @@ import com.honeycomb.hexagon.sample.modules.loaderinfo.LoaderInfoModule;
 import com.honeycomb.hexagon.sample.modules.server.ServerModule;
 import com.honeycomb.hexagon.sample.modules.update.UpdateModule;
 
-public class DynamicModuleList extends ModuleList {
+public class HexagonSampleModuleList extends ModuleList {
 
     @Override
     protected void register() {

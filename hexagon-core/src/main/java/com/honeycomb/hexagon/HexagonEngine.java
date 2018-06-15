@@ -1,148 +1,80 @@
 package com.honeycomb.hexagon;
 
+import com.honeycomb.hexagon.core.ControllerInfo;
+import com.honeycomb.hexagon.core.IController;
+import com.honeycomb.hexagon.core.IService;
+import com.honeycomb.hexagon.core.ModuleInfo;
+import com.honeycomb.hexagon.core.ServiceInfo;
 import com.honeycomb.hexagon.register.ModuleList;
 
-public class HexagonEngine {
-    private final ModuleRegistry mModuleRegistry;
-    private final ControllerRegistry mControllerRegistry;
-    private final ServiceRegistry mServiceRegistry;
+import java.util.List;
 
-    private final ModuleRegistrar mModuleRegistrar;
-    private final ModuleResolver mModuleResolver;
-    private final ServiceManager mServiceManager;
+public class HexagonEngine extends HexagonComponent {
 
-    private HexagonEngine(Builder builder) {
-        mModuleRegistry = builder.moduleRegistry;
-        mControllerRegistry = builder.controllerRegistry;
-        mServiceRegistry = builder.serviceRegistry;
-
-        mModuleRegistrar = builder.registrar;
-        mModuleRegistrar.setEngine(this);
-
-        mModuleResolver = builder.resolver;
-        mModuleResolver.setEngine(this);
-
-        mServiceManager = builder.serviceManager;
-        mServiceManager.setEngine(this);
-    }
-
-    //==============================================================================================
-    // Getters
-    //==============================================================================================
-
-    public ModuleRegistry getModuleRegistry() {
-        return mModuleRegistry;
-    }
-
-    public ControllerRegistry getControllerRegistry() {
-        return mControllerRegistry;
-    }
-
-    public ServiceRegistry getServiceRegistry() {
-        return mServiceRegistry;
-    }
-
-    public ModuleRegistrar getModuleRegistrar() {
-        return mModuleRegistrar;
-    }
-
-    public ModuleResolver getModuleResolver() {
-        return mModuleResolver;
-    }
-
-    public ServiceManager getServiceManager() {
-        return mServiceManager;
+    public HexagonEngine(HexagonAssembly assembly) {
+        if (assembly == null) {
+            throw new NullPointerException("Hexagon assembly is null.");
+        }
+        attachTo(assembly);
     }
 
     //==============================================================================================
     // Install
     //==============================================================================================
 
-    public void installModules(ModuleList moduleList) {
-        // Register modules.
-        mModuleRegistrar.register(moduleList);
+    public void install(ModuleList moduleList) {
+        if (moduleList != null) {
+            assembly().moduleRegistrar().register(moduleList);
 
-        // Resolve all modules after new modules added.
-        mModuleResolver.resolve();
+            assembly().moduleResolver().resolve();
+        }
     }
 
     //==============================================================================================
-    // Factory methods
+    // Module interfaces
     //==============================================================================================
 
-    public static HexagonEngine create() {
-        return buildUpon().build();
+    public List<ModuleInfo> modules() {
+        return assembly().moduleRegistry().getRegisteredModules();
     }
 
-    public static Builder buildUpon() {
-        return new Builder();
+    //==============================================================================================
+    // Controller interfaces
+    //==============================================================================================
+
+    public ControllerInfo controllerInfo(String name) {
+        return assembly().controllerRegistry().getControllerInfo(name);
     }
 
-    public static class Builder {
-        ModuleRegistry moduleRegistry;
-        ControllerRegistry controllerRegistry;
-        ServiceRegistry serviceRegistry;
+    public <T extends IController> T controller(Class<T> controllerClass) {
+        return assembly().controllerRegistry().getController(controllerClass);
+    }
 
-        ModuleRegistrar registrar;
-        ModuleResolver resolver;
-        ServiceManager serviceManager;
+    //==============================================================================================
+    // Service interfaces
+    //==============================================================================================
 
-        public Builder moduleRegistry(ModuleRegistry registry) {
-            this.moduleRegistry = registry;
-            return this;
-        }
+    public ServiceInfo serviceInfo(String name) {
+        return assembly().serviceRegistry().getServiceInfo(name);
+    }
 
-        public Builder controllerRegistry(ControllerRegistry registry) {
-            this.controllerRegistry = registry;
-            return this;
-        }
+    public boolean start(Class<? extends IService> serviceClass) {
+        return assembly().serviceManager().startService(serviceClass);
+    }
 
-        public Builder serviceRegistry(ServiceRegistry registry) {
-            this.serviceRegistry = registry;
-            return this;
-        }
+    public boolean startAll(String category) {
+        return assembly().serviceManager().startServices(category);
+    }
 
-        public Builder moduleRegistrar(ModuleRegistrar registrar) {
-            this.registrar = registrar;
-            return this;
-        }
+    public boolean stop(Class<? extends IService> serviceClass) {
+        return assembly().serviceManager().stopService(serviceClass);
+    }
 
-        public Builder moduleResolver(ModuleResolver resolver) {
-            this.resolver = resolver;
-            return this;
-        }
+    public boolean stopAll(String category) {
+        return assembly().serviceManager().stopServices(category);
+    }
 
-        public Builder serviceManager(ServiceManager manager) {
-            this.serviceManager = manager;
-            return this;
-        }
-
-        public HexagonEngine build() {
-            if (moduleRegistry == null) {
-                moduleRegistry = new ModuleRegistry();
-            }
-
-            if (controllerRegistry == null) {
-                controllerRegistry = new ControllerRegistry();
-            }
-
-            if (serviceRegistry == null) {
-                serviceRegistry = new ServiceRegistry();
-            }
-
-            if (registrar == null) {
-                registrar = new ModuleRegistrar();
-            }
-
-            if (resolver == null) {
-                resolver = new ModuleResolver();
-            }
-
-            if (serviceManager == null) {
-                serviceManager = new ServiceManager();
-            }
-
-            return new HexagonEngine(this);
-        }
+    public boolean stopAll() {
+        return assembly().serviceManager().stopAllServices();
     }
 }

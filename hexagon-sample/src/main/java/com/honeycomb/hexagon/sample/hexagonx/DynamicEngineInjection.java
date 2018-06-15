@@ -1,8 +1,8 @@
 package com.honeycomb.hexagon.sample.hexagonx;
 
-import com.honeycomb.hexagon.HexagonEngine;
+import com.honeycomb.hexagon.HexagonAssembly;
 import com.honeycomb.hexagon.register.ModuleList;
-import com.honeycomb.hexagon.sample.modules.DynamicModuleList;
+import com.honeycomb.hexagon.sample.modules.HexagonSampleModuleList;
 
 class DynamicEngineInjection {
 
@@ -10,11 +10,11 @@ class DynamicEngineInjection {
         return new DynamicEngineInjection();
     }
 
-    HexagonEngine provideEngine() {
-        return HexagonEngine.create();
+    HexagonAssembly provideEngine() {
+        return HexagonAssembly.create();
     }
 
     ModuleList provideBootstrapModules() {
-        return new DynamicModuleList();
+        return new HexagonSampleModuleList();
     }
 }

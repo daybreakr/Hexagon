@@ -11,15 +11,10 @@ import com.honeycomb.hexagon.register.ServiceRegistration;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class ModuleRegistrar {
-    private HexagonEngine mEngine;
-
-    public void setEngine(HexagonEngine engine) {
-        mEngine = engine;
-    }
+public class ModuleRegistrar extends HexagonComponent {
 
     public void register(ModuleList moduleList) {
-        if (mEngine == null) {
+        if (assembly() == null) {
             throw new IllegalStateException("Engine not attached.");
         }
 
@@ -55,7 +50,7 @@ public class ModuleRegistrar {
         info.dependencies(controller.dependencies());
         info.resolved(false);
 
-        mEngine.getControllerRegistry().register(info, controller.provider());
+        assembly().controllerRegistry().register(info, controller.provider());
 
         outRegisteredControllers.add(name);
     }
@@ -74,7 +69,7 @@ public class ModuleRegistrar {
         info.categorise(service.categories());
         info.resolved(false);
 
-        mEngine.getServiceRegistry().register(info, service.provider());
+        assembly().serviceRegistry().register(info, service.provider());
 
         outRegisteredServices.add(name);
     }
@@ -91,6 +86,6 @@ public class ModuleRegistrar {
         info.services(registeredServices);
         info.resolved(false);
 
-        mEngine.getModuleRegistry().register(info);
+        assembly().moduleRegistry().register(info);
     }
 }

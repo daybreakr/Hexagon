@@ -6,14 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ServiceManager {
-    private HexagonEngine mEngine;
-
+public class ServiceManager extends HexagonComponent {
     private final Map<String, ServiceRecord> mRecords = new HashMap<>();
-
-    public void setEngine(HexagonEngine engine) {
-        mEngine = engine;
-    }
 
     public boolean startService(Class<? extends IService> serviceClass) {
         final String name = serviceClass != null ? serviceClass.getName() : null;
@@ -21,20 +15,20 @@ public class ServiceManager {
     }
 
     public boolean startService(String name) {
-        if (mEngine == null) {
+        if (assembly() == null) {
             return false;
         }
 
-        IService service = mEngine.getServiceRegistry().getService(name);
+        IService service = assembly().serviceRegistry().getService(name);
         return service != null && startService(name, service);
     }
 
     public boolean startServices(String category) {
-        if (mEngine == null) {
+        if (assembly() == null) {
             return false;
         }
 
-        Set<String> names = mEngine.getServiceRegistry().getRegisteredServiceNames(category);
+        Set<String> names = assembly().serviceRegistry().getRegisteredServiceNames(category);
         if (names != null) {
             boolean result = true;
             for (String name : names) {
@@ -56,29 +50,29 @@ public class ServiceManager {
     }
 
     public boolean stopService(String name) {
-        if (mEngine == null) {
+        if (assembly() == null) {
             return false;
         }
 
-        IService service = mEngine.getServiceRegistry().getService(name);
+        IService service = assembly().serviceRegistry().getService(name);
         return service != null && stopService(name, service);
     }
 
     public boolean stopServices(String category) {
-        if (mEngine == null) {
+        if (assembly() == null) {
             return false;
         }
 
-        Set<String> names = mEngine.getServiceRegistry().getRegisteredServiceNames(category);
+        Set<String> names = assembly().serviceRegistry().getRegisteredServiceNames(category);
         return stopServices(names);
     }
 
     public boolean stopAllServices() {
-        if (mEngine == null) {
+        if (assembly() == null) {
             return false;
         }
 
-        Set<String> names = mEngine.getServiceRegistry().getRegisteredServiceNames();
+        Set<String> names = assembly().serviceRegistry().getRegisteredServiceNames();
         return stopServices(names);
     }
 

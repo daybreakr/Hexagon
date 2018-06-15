@@ -1,7 +1,7 @@
 package com.honeycomb.hexagon.sample.hexagonx.conditions;
 
+import com.honeycomb.hexagon.Hexagon;
 import com.honeycomb.hexagon.register.RegistrationCondition;
-import com.honeycomb.hexagon.sample.hexagonx.DynamicEngine;
 import com.honeycomb.hexagon.sample.modules.loaderinfo.LoaderInfo;
 import com.honeycomb.hexagon.sample.modules.loaderinfo.LoaderInfoModule;
 
@@ -16,7 +16,7 @@ public class MinLoaderVersionCondition extends RegistrationCondition {
 
     @Override
     public boolean isSatisfied() {
-        LoaderInfo loaderInfo = DynamicEngine.controller(LoaderInfo.class);
+        LoaderInfo loaderInfo = Hexagon.controller(LoaderInfo.class);
         return loaderInfo != null && loaderInfo.getVersionCode() >= mMinLoaderVersion;
     }
 }
