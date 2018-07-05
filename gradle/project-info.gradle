@@ -1,36 +1,87 @@
-def printApplicationInfo(Project project) {
+def printRootProjectInfo() {
+    println "===== Root Project ====="
+    println "[name]"
+    println "${rootProject.name}"
     println ""
-    println " ===== Android Application ====="
-    println " ${project.name}"
-    println ""
-    println "   - applicationId: ${project.applicationId}"
-    println "   - version: ${project.version} (${project.versionCode})"
-    println " -------------------------------"
-    println ""
+    println "[group]"
+    println "${rootProject.group}"
+    println "[version]"
+    println "${rootProject.version}"
+    println "========================"
 }
 
-def printLibraryInfo(Project project) {
+def printAndroidApplicationInfo(Project project) {
+    println "===== Android Application ====="
+    println "[name]"
+    println "${project.name}"
     println ""
-    println " ===== Android Library ====="
-    println " ${project.name}"
-    println ""
-    println "   - maven: "
-    println " ${project.group}:${project.name}:${project.version}"
-    println "----------------------------"
-    println ""
+    println "[applicationId]"
+    println "${project.applicationId}"
+    println "[version]"
+    println "${project.version} (${project.versionCode})"
+    println " -------------------------------"
 }
+
+def printAndroidLibraryInfo(Project project) {
+    println "===== Android Library ====="
+    println "[name]"
+    println "${project.name}"
+    println ""
+    println "[libraryId]"
+    println "${project.group}:${project.name}:${project.version}"
+    println "----------------------------"
+}
+
+def printJavaLibraryInfo(Project project) {
+    println "===== Java Library ====="
+    println "[name]"
+    println "${project.name}"
+    println ""
+    println "[libraryId]"
+    println "${project.group}:${project.name}:${project.version}"
+    println "----------------------------"
+}
+
+def ROOT_PROJECT = "root-project"
+def ANDROID_APPLICATION = "android-application"
+def ANDROID_LIBRARY = "android-library"
+def JAVA_LIBRARY = "java-library"
 
 afterEvaluate { project ->
-    def androidApplication = project.plugins.hasPlugin('com.android.application')
-    def androidLibrary = project.plugins.hasPlugin('com.android.library')
-    if (androidApplication || androidLibrary) {
+    def type = null
+    if (project.name == rootProject.name) {
+        type = ROOT_PROJECT
+    } else if (project.plugins.hasPlugin('com.android.application')) {
+        type = ANDROID_APPLICATION
+    } else if (project.plugins.hasPlugin('com.android.library')) {
+        type = ANDROID_LIBRARY
+    } else if (project.plugins.hasPlugin('java-library')) {
+        type = JAVA_LIBRARY
+    }
+
+    if (type != null) {
         task projectInfo {
-            doLast {
-                if (androidApplication) {
-                    printApplicationInfo project
-                } else {
-                    printLibraryInfo project
-                }
+            switch (type) {
+                case ROOT_PROJECT:
+                    printRootProjectInfo()
+                    break
+                case ANDROID_APPLICATION:
+                    doLast {
+                        printAndroidApplicationInfo(project)
+                    }
+                    break
+                case ANDROID_LIBRARY:
+                    doLast {
+                        printAndroidLibraryInfo(project)
+                    }
+                    break
+                case JAVA_LIBRARY:
+                    doLast {
+                        printJavaLibraryInfo(project)
+                    }
+                    break
+                default:
+                    break
             }
         }
     }

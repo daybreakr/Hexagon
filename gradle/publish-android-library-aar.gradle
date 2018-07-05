@@ -1,3 +1,8 @@
+if (!project.plugins.hasPlugin('com.android.library')) {
+    throw new IllegalArgumentException("‘${project.name}’ is not a Android library project"
+        + ", cannot apply this plugin.")
+}
+
 apply plugin: 'maven-publish'
 
 afterEvaluate { project ->
@@ -19,10 +24,9 @@ afterEvaluate { project ->
 
                 // release aar
                 android.libraryVariants.all { variant ->
-                    if (variant.buildType.name != 'release') {
-                        return
+                    if (variant.buildType.name == 'release') {
+                        artifact variant.packageLibrary // This is the aar library
                     }
-                    artifact variant.packageLibrary // This is the aar library
                 }
 
                 // include dependencies into pom file

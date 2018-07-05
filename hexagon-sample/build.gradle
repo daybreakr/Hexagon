@@ -1,6 +1,6 @@
-apply plugin: 'com.android.application'
+project.ext.applicationId = "com.honeycomb.hexagon.sample"
 
-ext.applicationId = "com.honeycomb.hexagon.sample"
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -11,6 +11,7 @@ android {
         targetSdkVersion versions.targetSdk
         versionCode project.versionCode
         versionName project.version
+
         testInstrumentationRunner runners.androidJUnitRunner
     }
 }
@@ -25,4 +26,4 @@ dependencies {
     androidTestImplementation deps.test.androidJunit
 }
 
-apply from: rootProject.file('gradle/project-info.gradle')
+apply from: gradlePlugins.projectInfo
