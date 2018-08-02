@@ -5,6 +5,6 @@ public abstract class Condition {
     public abstract boolean isSatisfied();
 
     public String getDescription() {
-        return null;
+        return getClass().getSimpleName();
     }
 }
