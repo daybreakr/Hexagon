@@ -3,12 +3,8 @@ package com.honeycomb.hexagonx.core;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class HexagonServiceSettingManagerTest {
     private HexagonServiceSettingManager mManager;
-    private List<HexagonServiceSetting> mTestServices;
 
     private HexagonServiceSetting mServiceA;
     private HexagonServiceSetting mServiceB;
@@ -23,7 +19,6 @@ public class HexagonServiceSettingManagerTest {
     @Before
     public void setUp() {
         mManager = new HexagonServiceSettingManager();
-        mTestServices = new ArrayList<>();
 
         mServiceA = serviceSetting("A").condition(always(true));
         mServiceB = serviceSetting("B").condition(always(true));
@@ -46,76 +41,47 @@ public class HexagonServiceSettingManagerTest {
     }
 
     @Test
-    public void testGetBootList() {
-        List<HexagonServiceSetting> bootList = mManager.getBootList();
-        assert bootList.size() == mTestServices.size();
+    public void testEnable_all() {
+        enableAll();
 
-        for (HexagonServiceSetting service : bootList) {
-            int serviceIndex = bootList.indexOf(service);
-            assert serviceIndex >= 0;
-
-            if (service.dependencies != null) {
-                for (HexagonServiceSetting dependency : service.dependencies) {
-                    int dependencyIndex = bootList.indexOf(dependency);
-                    assert dependencyIndex >= 0;
-
-                    assert dependencyIndex < serviceIndex;
-                }
-            }
-        }
-    }
-
-    @Test
-    public void testActivate_all() {
-        activateAll();
-
-        for (HexagonServiceSetting setting : mTestServices) {
-            assert setting.active;
-        }
-
-        assert !mServiceA.enabled;
-        assert mServiceB.enabled;
-        assert !mServiceC.enabled;
-        assert !mServiceD.enabled;
-        assert !mServiceE.enabled;
-
-        assert mServiceX.enabled;
-        assert mServiceY.enabled;
-        assert mServiceZ.enabled;
-    }
-
-    @Test
-    public void testDeactivate() throws HexagonAvailabilityException {
-        activateAll();
-
-        mManager.deactivate(mServiceZ.name);
-
-        assert mServiceZ.enabled;
-        assert !mServiceZ.active;
-
-        assert !mServiceY.enabled;
-        assert mServiceY.active;
-
-        assert !mServiceX.enabled;
-        assert mServiceX.active;
-    }
-
-    @Test
-    public void testReactivate() throws HexagonAvailabilityException {
-        activateAll();
-
-        mManager.deactivate(mServiceZ.name);
-        mManager.activate(mServiceZ.name);
+        assert !mServiceA.isAvailable();
+        assert mServiceB.isAvailable();
+        assert !mServiceC.isAvailable();
+        assert !mServiceD.isAvailable();
+        assert !mServiceE.isAvailable();
 
         assert mServiceX.isAvailable();
         assert mServiceY.isAvailable();
         assert mServiceZ.isAvailable();
     }
 
-    private void activateAll() {
-        for (HexagonServiceSetting service : mManager.getBootList()) {
+    @Test
+    public void testDisable() throws HexagonAvailabilityException {
+        enableAll();
+
+        mManager.disable(mServiceZ.name);
+
+        assert !mServiceX.isAvailable();
+        assert !mServiceY.isAvailable();
+        assert !mServiceZ.isAvailable();
+    }
+
+    @Test
+    public void testReEnable() throws HexagonAvailabilityException {
+        enableAll();
+
+        mManager.disable(mServiceZ.name);
+        mManager.enable(mServiceZ.name);
+
+        assert mServiceX.isAvailable();
+        assert mServiceY.isAvailable();
+        assert mServiceZ.isAvailable();
+    }
+
+    private void enableAll() {
+        for (HexagonServiceSetting service : mManager.getAll()) {
             try {
-                mManager.activate(service.name, false);
+                mManager.enable(service.name);
             } catch (HexagonAvailabilityException ignored) {
             }
         }
@@ -123,25 +89,11 @@ public class HexagonServiceSettingManagerTest {
 
     private HexagonServiceSetting serviceSetting(String name) {
         HexagonServiceSetting setting = new HexagonServiceSetting(name);
-        mTestServices.add(setting);
         mManager.add(setting);
         return setting;
     }
 
     private static Condition always(boolean satisfied) {
         return new FixedCondition(satisfied);
-    }
-
-    private static final class FixedCondition extends Condition {
-        private final boolean mSatisfied;
-
-        FixedCondition(boolean satisfied) {
-            mSatisfied = satisfied;
-        }
-
-        @Override
-        public boolean isSatisfied() {
-            return mSatisfied;
-        }
     }
 }

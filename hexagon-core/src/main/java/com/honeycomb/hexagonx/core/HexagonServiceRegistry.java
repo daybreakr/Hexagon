@@ -14,7 +14,7 @@ public class HexagonServiceRegistry {
             new HashMap<>();
 
     public <T extends HexagonService> void registerService(Class<T> serviceClass,
-                                                           IProvider<T> provider) {
+                                                           IProvider<? extends T> provider) {
         if (serviceClass == null || provider == null) {
             throw new NullPointerException("Invalid registration.");
         }
