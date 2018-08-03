@@ -18,8 +18,6 @@ public class HexagonServiceManagerTest {
     @Test
     public void testRegister() {
         TestServiceImpl impl = new TestServiceImpl();
-
-        mManager.register(TestServiceInterface.class, provider(impl));
     }
 
     private static <T> IProvider<T> provider(T instance) {
